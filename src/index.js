@@ -63,11 +63,7 @@ async function sendHeartbeat() {
         },
       }
     );
-    console.log(
-      `Heartbeat sent for ${entity} (Project: ${project}) at ${new Date(
-        currentTime * 1000
-      ).toLocaleString()} - Status: ${response.status}`
-    );
+    console.log(`Heartbeat sent for ${entity} in project ${project} at ${currentTime}`);
   } catch (error) {
     console.error("Error sending heartbeat:", error.message);
     if (error.response) {
@@ -75,5 +71,7 @@ async function sendHeartbeat() {
     }
   }
 }
+
+setInterval(sendHeartbeat, 120000);
 
 sendHeartbeat();
