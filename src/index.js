@@ -1,6 +1,7 @@
-require("dotenv").config();
 const axios = require("axios");
-const faker = require('@faker-js/faker');
+const { faker } = require("@faker-js/faker");
+require("dotenv").config();
+
 const apiKey = process.env.APIKEY;
 
 if (!apiKey) {
@@ -21,16 +22,7 @@ const files = [
   "Docker-compose.yaml",
 ];
 
-const languages = [
-  "JavaScript",
-  "Solidity",
-  "C",
-  "Python",
-  "Java",
-  "Dart",
-  "TypeScript",
-  ".eu-outhack",
-];
+const languages = ["TypeScript", "JavaScript", "Docker", "Prisma", "JSON", "Bash"];
 
 const projects = [
   "Kampus-Haven-api",
@@ -40,12 +32,7 @@ const projects = [
   "past-paper-api",
 ];
 
-const editors = [
-  "VS Code",
-  // "Android Studio",
-  // "Vim",
-];
-
+const editors = ["VS Code"];
 
 async function sendHeartbeat() {
   const currentTime = Math.floor(Date.now() / 1000);
@@ -53,7 +40,7 @@ async function sendHeartbeat() {
   const language = faker.helpers.arrayElement(languages);
   const project = faker.helpers.arrayElement(projects);
   const isWrite = faker.datatype.boolean();
-  const editor = faker.random.arrayElement(editors);
+  const editor = faker.helpers.arrayElement(editors);
 
   const data = {
     time: currentTime,
@@ -83,10 +70,10 @@ async function sendHeartbeat() {
     );
   } catch (error) {
     console.error("Error sending heartbeat:", error.message);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+    }
   }
 }
 
-// Random interval between 50 and 70 seconds
-const getRandomInterval = () =>
-  Math.floor(Math.random() * (70000 - 50000) + 50000);
-setInterval(sendHeartbeat, getRandomInterval());
+sendHeartbeat();
