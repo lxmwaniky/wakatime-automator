@@ -61,6 +61,8 @@ async function sendHeartbeat() {
         headers: {
           Authorization: `Basic ${Buffer.from(apiKey).toString("base64")}`,
         },
+        timeout: 10000,  // Timeout after 10 seconds
+        maxRedirects: 5  // Limit redirects
       }
     );
     console.log(`Heartbeat sent for ${entity} in project ${project} at ${currentTime}`);
@@ -68,10 +70,15 @@ async function sendHeartbeat() {
     console.error("Error sending heartbeat:", error.message);
     if (error.response) {
       console.error("Response data:", error.response.data);
+      if (error.response.data.skip && error.response.data.skip === "Too many duplicate heartbeats.") {
+        console.log("Duplicate heartbeat detected. Retrying after 2 minutes...");
+      }
     }
   }
 }
 
-setInterval(sendHeartbeat, 120000);
-
-sendHeartbeat();
+// Wait for the first request and then send every 2 minutes
+setTimeout(() => {
+  sendHeartbeat();
+  setInterval(sendHeartbeat, 120000);  // 2 minutes interval
+}, 0);  // Send the first heartbeat immediately
