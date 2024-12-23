@@ -40,6 +40,12 @@ const projects = [
   "past-paper-api",
 ];
 
+const editors = [
+  "VS Code",
+  // "Android Studio",
+  // "Vim",
+];
+
 
 async function sendHeartbeat() {
   const currentTime = Math.floor(Date.now() / 1000);
@@ -47,6 +53,7 @@ async function sendHeartbeat() {
   const language = faker.helpers.arrayElement(languages);
   const project = faker.helpers.arrayElement(projects);
   const isWrite = faker.datatype.boolean();
+  const editor = faker.random.arrayElement(editors);
 
   const data = {
     time: currentTime,
@@ -56,6 +63,7 @@ async function sendHeartbeat() {
     is_write: isWrite,
     language: language,
     project: project,
+    editor: editor,
   };
 
   try {
