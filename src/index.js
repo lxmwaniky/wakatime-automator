@@ -3,6 +3,7 @@ const { faker } = require("@faker-js/faker");
 require("dotenv").config();
 
 const apiKey = process.env.APIKEY;
+const apiUrl = "https://api.wakatime.com/api/v1/users/current/heartbeats";
 
 if (!apiKey) {
   console.error("API key is missing. Please set the APIKEY in your .env file.");
@@ -22,7 +23,14 @@ const files = [
   "Docker-compose.yaml",
 ];
 
-const languages = ["TypeScript", "JavaScript", "Docker", "Prisma", "JSON", "Bash"];
+const languages = [
+  "TypeScript",
+  "JavaScript",
+  "Docker",
+  "Prisma",
+  "JSON",
+  "Bash",
+];
 
 const projects = [
   "Kampus-Haven-api",
@@ -54,31 +62,33 @@ async function sendHeartbeat() {
   };
 
   try {
-    const response = await axios.post(
-      "https://api.wakatime.com/api/v1/users/current/heartbeats",
-      data,
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(apiKey).toString("base64")}`,
-        },
-        timeout: 10000,  // Timeout after 10 seconds
-        maxRedirects: 5  // Limit redirects
-      }
+    const response = await axios.post(apiUrl, data, {
+      headers: {
+        Authorization: `Basic ${Buffer.from(apiKey).toString("base64")}`,
+      },
+      timeout: 10000,
+      maxRedirects: 5,
+    });
+    console.log(
+      `Heartbeat sent for ${entity} in project ${project} at ${currentTime}`
     );
-    console.log(`Heartbeat sent for ${entity} in project ${project} at ${currentTime}`);
   } catch (error) {
     console.error("Error sending heartbeat:", error.message);
     if (error.response) {
       console.error("Response data:", error.response.data);
-      if (error.response.data.skip && error.response.data.skip === "Too many duplicate heartbeats.") {
-        console.log("Duplicate heartbeat detected. Retrying after 2 minutes...");
+      if (
+        error.response.data.skip &&
+        error.response.data.skip === "Too many duplicate heartbeats."
+      ) {
+        console.log(
+          "Duplicate heartbeat detected. Retrying after 2 minutes..."
+        );
       }
     }
   }
 }
 
-// Wait for the first request and then send every 2 minutes
 setTimeout(() => {
   sendHeartbeat();
-  setInterval(sendHeartbeat, 120000);  // 2 minutes interval
-}, 0);  // Send the first heartbeat immediately
+  setInterval(sendHeartbeat, 120000);
+}, 0);
