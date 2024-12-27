@@ -2,7 +2,7 @@ const axios = require("axios");
 const { faker } = require("@faker-js/faker");
 require("dotenv").config();
 
-const apiKey = process.env.APIKEY;
+const apiKey = process.env.API_KEY;
 const apiUrl = "https://api.wakatime.com/api/v1/users/current/heartbeats";
 
 if (!apiKey) {

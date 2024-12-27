@@ -45,7 +45,7 @@ npm install
 Create a `.env` file in the root directory of the project and add your Wakatime API key as shown below:
 
 ```bash
-APIKEY=your-wakatime-api-key
+API_KEY=your-wakatime-api-key
 ```
 
 2. Run the script
